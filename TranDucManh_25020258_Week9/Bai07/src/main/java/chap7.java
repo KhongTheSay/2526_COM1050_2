@@ -5,13 +5,7 @@ package TranDucManh_25020258_Week9.Bai07.src;
  */
         public class chap7 {
 
-  /**
-   * Hàm tính tổng hai số nguyên.
-   *
-   * @param a Số hạng thứ nhất.
-   * @param b Số hạng thứ nhất.
-   * @return Tổng của a và b.
-   */
+
   public int add(int a, int b) {
     return a + b;
   }
