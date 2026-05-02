@@ -1,9 +1,8 @@
-name: CI Automated Code Review Bai7
+name: Bai07 Automated Code Review
 
 on:
   push:
     branches: [ main ]
-  # Trigger quan trọng của Bài 7
   pull_request:
     branches: [ main ]
 
@@ -20,15 +19,13 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # Bước chạy Checkstyle
       - name: Run Checkstyle
         run: mvn checkstyle:check
-        working-directory: Bai07 # Thay đổi theo thư mục bài của bạn
+        working-directory: Bai07
 
-      # Action tự động bình luận vào Pull Request nếu có lỗi (Inline Feedback)
       - name: Checkstyle Review
         uses: dbelyaev/action-checkstyle@master
-        if: failure() # Chỉ chạy bước này nếu bước Checkstyle ở trên bị lỗi
+        if: failure()
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           level: warning
