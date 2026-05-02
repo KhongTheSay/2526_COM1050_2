@@ -1,0 +1,48 @@
+
+
+
+
+
+<!-- <?xml version="1.0" encoding="UTF-8"?> -->
+<!-- ĐÂY LÀ THẺ ROOT PHẢI CÓ ĐẦU TIÊN -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.uet</groupId>
+    <artifactId>Bai02</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <dependencies>
+        <!-- Các thư viện Logback, Hibernate, JUnit 5 để ở đây -->
+    </dependencies>
+
+    <build>
+    <sourceDirectory>.</sourceDirectory> 
+    
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>3.3.0</version>
+            <configuration>
+                <!-- Sử dụng bộ quy tắc của Google -->
+                <configLocation>google_checks.xml</configLocation>
+                <consoleOutput>true</consoleOutput>
+                <failsOnError>true</failsOnError>
+                <includeTestSourceDirectory>false</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+                <execution>
+                    <id>validate</id>
+                    <phase>validate</phase>
+                    <goals>
+                        <goal>check</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+    </build>
+</project>

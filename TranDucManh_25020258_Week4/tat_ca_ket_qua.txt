@@ -1,0 +1,16 @@
+Đang biên dịch...
+Biên dịch thành công!
+Đang chạy: TranDucManh_25020258_Week4.Bai01.src.chap1
+------------------------------------
+X�a h�nh tr�n t?i ?i?m : 1010
+V? h�nh tr�n t?i ?i?m c� t?a ?? 2020
+Đang biên dịch...
+Biên dịch thành công!
+Đang chạy: TranDucManh_25020258_Week4.Bai02.src.chap2
+------------------------------------
+Hero is Swimming 
+Dam boc 
+Đang biên dịch...
+Biên dịch thành công!
+Đang chạy: TranDucManh_25020258_Week4.Bai03.src.chap3
+------------------------------------

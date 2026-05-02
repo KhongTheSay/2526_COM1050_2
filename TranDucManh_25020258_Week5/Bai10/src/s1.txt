@@ -1,0 +1,4 @@
+username=langtu_coder
+timeout=30
+maxConnections=10
+version=1.0.2

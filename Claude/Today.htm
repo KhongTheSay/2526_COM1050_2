@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Boss Battle Quiz 🐍⚔️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0a0e27;
+            --bg-card: #1a1f3a;
+            --accent-primary: #00ff88;
+            --accent-danger: #ff3366;
+            --accent-warning: #ffaa00;
+            --text-light: #e0e6ff;
+            --border-glow: rgba(0, 255, 136, 0.3);
+        }
+
+        body {
+            font-family: 'VT323', monospace;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 255, 136, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 51, 102, 0.1) 0%, transparent 50%);
+            animation: bgPulse 10s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        @keyframes bgPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header with game title */
+        .game-header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(26, 31, 58, 0.8) 100%);
+            border: 2px solid var(--accent-primary);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 30px var(--border-glow);
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .game-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, var(--accent-primary), #00ddff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+            margin-bottom: 10px;
+            animation: titleGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.3); }
+        }
+
+        .game-subtitle {
+            font-size: 1.5rem;
+            color: var(--accent-warning);
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1rem;
+        }
+
+        /* Boss health bar area */
+        .boss-area {
+            background: rgba(26, 31, 58, 0.9);
+            border: 3px solid var(--accent-danger);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 40px rgba(255, 51, 102, 0.3);
+            animation: bossEntrance 1s ease-out;
+        }
+
+        @keyframes bossEntrance {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .boss-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .boss-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-danger);
+            text-shadow: 0 0 10px rgba(255, 51, 102, 0.8);
+        }
+
+        .boss-level {
+            font-size: 1.3rem;
+            color: var(--accent-warning);
+            font-weight: bold;
+        }
+
+        .boss-hp-container {
+            width: 100%;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--accent-danger);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .boss-hp-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ff3366, #ff6699);
+            transition: width 0.6s ease-out;
+            box-shadow: 0 0 20px rgba(255, 51, 102, 0.6);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .boss-hp-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            to { left: 200%; }
+        }
+
+        .boss-hp-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            z-index: 1;
+        }
+
+        .boss-description {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            text-align: center;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        /* Player stats */
+        .player-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(26, 31, 58, 0.8);
+            border: 2px solid var(--accent-primary);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--accent-primary);
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        /* Question card */
+        .question-card {
+            background: rgba(26, 31, 58, 0.95);
+            border: 2px solid var(--accent-primary);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 30px var(--border-glow);
+            animation: cardAppear 0.5s ease-out;
+        }
+
+        @keyframes cardAppear {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .question-number {
+            font-size: 1.3rem;
+            color: var(--accent-warning);
+            font-weight: bold;
+        }
+
+        .question-difficulty {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .difficulty-easy {
+            background: rgba(0, 255, 136, 0.2);
+            border: 2px solid var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .difficulty-medium {
+            background: rgba(255, 170, 0, 0.2);
+            border: 2px solid var(--accent-warning);
+            color: var(--accent-warning);
+        }
+
+        .difficulty-hard {
+            background: rgba(255, 51, 102, 0.2);
+            border: 2px solid var(--accent-danger);
+            color: var(--accent-danger);
+        }
+
+        .question-text {
+            font-size: 1.5rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            color: white;
+        }
+
+        .code-block {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            color: #c9d1d9;
+        }
+
+        .code-block .keyword { color: #ff7b72; }
+        .code-block .string { color: #a5d6ff; }
+        .code-block .comment { color: #8b949e; font-style: italic; }
+        .code-block .function { color: #d2a8ff; }
+        .code-block .number { color: #79c0ff; }
+
+        .options-grid {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            background: rgba(26, 31, 58, 0.6);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            color: var(--text-light);
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-family: 'VT323', monospace;
+        }
+
+        .option-btn:hover:not(.correct):not(.incorrect):not(:disabled) {
+            background: rgba(0, 255, 136, 0.1);
+            border-color: var(--accent-primary);
+            transform: translateX(10px);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .option-btn.correct {
+            background: rgba(0, 255, 136, 0.2);
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
+            animation: correctPulse 0.5s ease-out;
+        }
+
+        .option-btn.incorrect {
+            background: rgba(255, 51, 102, 0.2);
+            border-color: var(--accent-danger);
+            box-shadow: 0 0 30px rgba(255, 51, 102, 0.5);
+            animation: shake 0.5s ease-out;
+        }
+
+        @keyframes correctPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .explanation {
+            background: rgba(0, 255, 136, 0.05);
+            border-left: 4px solid var(--accent-primary);
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 8px;
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .explanation.show {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .explanation-title {
+            font-size: 1.4rem;
+            color: var(--accent-primary);
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .explanation-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: var(--text-light);
+        }
+
+        /* Navigation buttons */
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, var(--accent-primary), #00ddff);
+            color: var(--bg-dark);
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.5);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .nav-btn.back-btn {
+            background: linear-gradient(135deg, #666, #999);
+        }
+
+        /* Victory screen */
+        .victory-screen {
+            display: none;
+            text-align: center;
+            background: rgba(26, 31, 58, 0.98);
+            border: 3px solid var(--accent-primary);
+            border-radius: 15px;
+            padding: 50px;
+            margin: 50px auto;
+            max-width: 800px;
+            box-shadow: 0 0 50px rgba(0, 255, 136, 0.5);
+            animation: victoryAppear 1s ease-out;
+        }
+
+        @keyframes victoryAppear {
+            from {
+                opacity: 0;
+                transform: scale(0.5) rotate(-5deg);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        .victory-screen.show {
+            display: block;
+        }
+
+        .victory-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4rem;
+            color: var(--accent-primary);
+            margin-bottom: 20px;
+            animation: titleGlow 2s ease-in-out infinite;
+        }
+
+        .victory-stats {
+            font-size: 1.8rem;
+            margin: 20px 0;
+            line-height: 2;
+        }
+
+        .boss-defeated {
+            background: rgba(255, 51, 102, 0.1);
+            border: 2px solid var(--accent-danger);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            animation: defeatBlink 1s ease-in-out infinite;
+        }
+
+        @keyframes defeatBlink {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, var(--accent-danger), #ff6699);
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 51, 102, 0.3);
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 51, 102, 0.5);
+        }
+
+        /* Damage indicator */
+        .damage-indicator {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5rem;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            color: var(--accent-danger);
+            text-shadow: 0 0 30px rgba(255, 51, 102, 1);
+            pointer-events: none;
+            opacity: 0;
+            z-index: 1000;
+        }
+
+        .damage-indicator.show {
+            animation: damageFloat 1s ease-out;
+        }
+
+        @keyframes damageFloat {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            50% {
+                opacity: 1;
+                transform: translate(-50%, -80%) scale(1.2);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -120%) scale(1);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .game-title {
+                font-size: 2rem;
+            }
+            .boss-name {
+                font-size: 1.5rem;
+            }
+            .question-text {
+                font-size: 1.2rem;
+            }
+            .option-btn {
+                font-size: 1.1rem;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="game-header">
+            <h1 class="game-title">🐍 PYTHON BOSS BATTLE ⚔️</h1>
+            <p class="game-subtitle">Chiến đấu với code để trở thành master!</p>
+        </div>
+
+        <div class="boss-area" id="bossArea">
+            <div class="boss-info">
+                <h2 class="boss-name" id="bossName">Loading...</h2>
+                <div class="boss-level" id="bossLevel">Level 1</div>
+            </div>
+            <div class="boss-hp-container">
+                <div class="boss-hp-bar" id="bossHpBar" style="width: 100%"></div>
+                <div class="boss-hp-text" id="bossHpText">1000 / 1000 HP</div>
+            </div>
+            <p class="boss-description" id="bossDescription">Prepare for battle...</p>
+        </div>
+
+        <div class="player-stats">
+            <div class="stat-card">
+                <div class="stat-label">💯 Điểm</div>
+                <div class="stat-value" id="playerScore">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">✅ Đúng</div>
+                <div class="stat-value" id="correctCount">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">❌ Sai</div>
+                <div class="stat-value" id="incorrectCount">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">👹 Boss Defeated</div>
+                <div class="stat-value" id="bossesDefeated">0 / 5</div>
+            </div>
+        </div>
+
+        <div class="question-card" id="questionCard">
+            <div class="question-header">
+                <div class="question-number" id="questionNumber">Question 1/50</div>
+                <div class="question-difficulty" id="questionDifficulty">Medium</div>
+            </div>
+            <div class="question-text" id="questionText">Loading question...</div>
+            <div class="options-grid" id="optionsGrid"></div>
+            <div class="explanation" id="explanation">
+                <div class="explanation-title">💡 Giải thích:</div>
+                <div class="explanation-text" id="explanationText"></div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn back-btn" id="prevBtn" onclick="previousQuestion()">◀ Back</button>
+                <button class="nav-btn" id="nextBtn" onclick="nextQuestion()">Next ▶</button>
+            </div>
+        </div>
+
+        <div class="victory-screen" id="victoryScreen">
+            <h1 class="victory-title">🎉 VICTORY! 🎉</h1>
+            <div class="victory-stats">
+                <p>🏆 Tổng điểm: <span id="finalScore">0</span></p>
+                <p>✅ Câu đúng: <span id="finalCorrect">0</span></p>
+                <p>❌ Câu sai: <span id="finalIncorrect">0</span></p>
+                <p>📊 Tỷ lệ: <span id="finalPercentage">0</span>%</p>
+            </div>
+            <div id="defeatedBosses"></div>
+            <button class="restart-btn" onclick="restartGame()">🔄 Chơi lại</button>
+        </div>
+    </div>
+
+    <div class="damage-indicator" id="damageIndicator"></div>
+
+    <script>
+        // Game data
+        const questions = [
+            // BOSS 1: File I/O Dragon (10 questions)
+            {
+                boss: 0,
+                difficulty: "easy",
+                points: 10,
+                question: "Trong Python, mode nào dùng để mở file CHỈ ĐỂ ĐỌC?",
+                code: "",
+                options: ["'r'", "'w'", "'a'", "'x'"],
+                correct: 0,
+                explanation: "'r' (read) mode mở file chỉ để đọc. Nếu file không tồn tại sẽ raise FileNotFoundError. 'w' là write (ghi đè), 'a' là append (thêm vào cuối), 'x' là exclusive creation."
+            },
+            {
+                boss: 0,
+                difficulty: "medium",
+                points: 15,
+                question: "Code sau sẽ in ra gì?",
+                code: `with open('test.txt', 'w') as f:
+    f.write('Hello')
+    f.write('World')
+    
+with open('test.txt', 'r') as f:
+    print(f.read())`,
+                options: ["Hello World", "HelloWorld", "Hello\\nWorld", "Error"],
+                correct: 1,
+                explanation: "write() KHÔNG tự động thêm newline (\\n). Hai lần write liên tiếp sẽ nối chuỗi trực tiếp. Output là 'HelloWorld' không có khoảng trắng."
+            },
+            {
+                boss: 0,
+                difficulty: "hard",
+                points: 20,
+                question: "Điều gì xảy ra khi ta mở file với mode 'w' và file đã tồn tại?",
+                code: "",
+                options: [
+                    "Thêm nội dung mới vào cuối file",
+                    "Xóa toàn bộ nội dung cũ và tạo file mới",
+                    "Raise FileExistsError",
+                    "Chỉ đọc file, không ghi được"
+                ],
+                correct: 1,
+                explanation: "Mode 'w' (write) sẽ XÓA TOÀN BỘ nội dung file cũ và tạo file mới. Rất nguy hiểm nếu không cẩn thận! Dùng 'a' (append) nếu muốn giữ nội dung cũ."
+            },
+            {
+                boss: 0,
+                difficulty: "easy",
+                points: 10,
+                question: "Tại sao nên dùng 'with' statement khi làm việc với file?",
+                code: "",
+                options: [
+                    "Chạy nhanh hơn",
+                    "Tự động đóng file ngay cả khi có lỗi",
+                    "Cho phép mở nhiều file cùng lúc",
+                    "Không cần import module"
+                ],
+                correct: 1,
+                explanation: "'with' statement đảm bảo file được ĐÓNG TỰ ĐỘNG ngay cả khi có exception. Đây là best practice vì tránh resource leak và file corruption."
+            },
+            {
+                boss: 0,
+                difficulty: "medium",
+                points: 15,
+                question: "Output của code này?",
+                code: `f = open('data.txt', 'r')
+line1 = f.readline()
+line2 = f.readline()
+line3 = f.readline()
+print(f.closed)`,
+                options: ["True", "False", "None", "Error"],
+                correct: 1,
+                explanation: "File vẫn đang MỞ vì chưa gọi f.close(). Property f.closed sẽ là False. Đây là lý do nên dùng 'with' để tự động close."
+            },
+            {
+                boss: 0,
+                difficulty: "hard",
+                points: 20,
+                question: "Code này có vấn đề gì?",
+                code: `with open('input.txt', 'r') as f_in:
+    with open('output.txt', 'w') as f_out:
+        for line in f_in:
+            f_out.write(line.upper())
+f_in.read()`,
+                options: [
+                    "Không có lỗi",
+                    "ValueError: I/O operation on closed file",
+                    "FileNotFoundError",
+                    "MemoryError"
+                ],
+                correct: 1,
+                explanation: "Sau khi thoát khỏi 'with' block, file f_in đã được ĐÓNG TỰ ĐỘNG. Gọi f_in.read() bên ngoài sẽ raise ValueError vì file đã closed."
+            },
+            {
+                boss: 0,
+                difficulty: "medium",
+                points: 15,
+                question: "Phương thức nào trả về LIST chứa TẤT CẢ các dòng còn lại của file?",
+                code: "",
+                options: ["read()", "readline()", "readlines()", "readall()"],
+                correct: 2,
+                explanation: "readlines() trả về list chứa tất cả các dòng còn lại. read() trả về string toàn bộ file. readline() chỉ đọc 1 dòng. Không có readall()."
+            },
+            {
+                boss: 0,
+                difficulty: "easy",
+                points: 10,
+                question: "os.path.exists(path) kiểm tra điều gì?",
+                code: "",
+                options: [
+                    "File có quyền đọc không",
+                    "Path có tồn tại không (file hoặc directory)",
+                    "File có rỗng không",
+                    "File có đang mở không"
+                ],
+                correct: 1,
+                explanation: "os.path.exists() trả về True nếu path TỒN TẠI (có thể là file hoặc directory). Không quan tâm đến quyền truy cập hay nội dung."
+            },
+            {
+                boss: 0,
+                difficulty: "hard",
+                points: 20,
+                question: "CSV file sau có bao nhiêu cột?",
+                code: `# students.csv
+Name,Age,Major
+Alice,20,CS
+Bob,21,Math
+Charlie,19,\"Physics, Chemistry\"`,
+                options: ["3", "4", "5", "Không xác định"],
+                correct: 0,
+                explanation: "CSV có 3 cột: Name, Age, Major. Dòng Charlie có giá trị 'Physics, Chemistry' được bọc trong quotes nên vẫn tính là 1 cột duy nhất."
+            },
+            {
+                boss: 0,
+                difficulty: "medium",
+                points: 15,
+                question: "Trong JSON, kiểu dữ liệu nào KHÔNG hợp lệ?",
+                code: "",
+                options: ["string", "number", "boolean", "tuple"],
+                correct: 3,
+                explanation: "JSON hỗ trợ: string, number, boolean, null, array, object. KHÔNG có tuple! Python tuple sẽ được convert thành array khi dump sang JSON."
+            },
+
+            // BOSS 2: Recursion Beast (10 questions)
+            {
+                boss: 1,
+                difficulty: "easy",
+                points: 10,
+                question: "Base case trong recursion là gì?",
+                code: "",
+                options: [
+                    "Trường hợp có thể giải quyết trực tiếp không cần gọi đệ quy",
+                    "Trường hợp phải gọi đệ quy",
+                    "Trường hợp gây infinite loop",
+                    "Trường hợp đầu tiên của hàm"
+                ],
+                correct: 0,
+                explanation: "Base case là trường hợp ĐƠN GIẢN đủ để giải quyết trực tiếp KHÔNG CẦN gọi đệ quy. Ví dụ: factorial(0) = 1. Không có base case → infinite recursion!"
+            },
+            {
+                boss: 1,
+                difficulty: "medium",
+                points: 15,
+                question: "Code này in ra gì?",
+                code: `def mystery(n):
+    if n == 0:
+        return 0
+    else:
+        return n + mystery(n-1)
+
+print(mystery(4))`,
+                options: ["4", "10", "24", "0"],
+                correct: 1,
+                explanation: "Đây là tổng từ 1 đến n. mystery(4) = 4 + mystery(3) = 4 + 3 + mystery(2) = 4 + 3 + 2 + mystery(1) = 4 + 3 + 2 + 1 + mystery(0) = 4+3+2+1+0 = 10."
+            },
+            {
+                boss: 1,
+                difficulty: "hard",
+                points: 20,
+                question: "Fibonacci đệ quy có vấn đề gì?",
+                code: `def fibo(n):
+    if n <= 1:
+        return n
+    return fibo(n-1) + fibo(n-2)`,
+                options: [
+                    "Không có vấn đề gì",
+                    "Tính toán TRÙNG LẶP nhiều lần cùng giá trị",
+                    "Không có base case",
+                    "Syntax error"
+                ],
+                correct: 1,
+                explanation: "fibo(5) gọi fibo(4) và fibo(3). fibo(4) lại gọi fibo(3). Như vậy fibo(3) được tính 2 lần! Với n lớn có hàng nghìn lần tính trùng → rất chậm."
+            },
+            {
+                boss: 1,
+                difficulty: "medium",
+                points: 15,
+                question: "Code này sẽ gây ra lỗi gì?",
+                code: `def countdown(n):
+    print(n)
+    countdown(n)
+
+countdown(5)`,
+                options: [
+                    "ValueError",
+                    "RecursionError: maximum recursion depth exceeded",
+                    "NameError",
+                    "Không có lỗi"
+                ],
+                correct: 1,
+                explanation: "Hàm gọi countdown(n) thay vì countdown(n-1) → n không bao giờ giảm → infinite recursion! Python giới hạn ~1000 frame → RecursionError."
+            },
+            {
+                boss: 1,
+                difficulty: "easy",
+                points: 10,
+                question: "Trong recursion, 'self' parameter tương tự như gì?",
+                code: "",
+                options: [
+                    "Recursive call",
+                    "Base case",
+                    "Leap of faith",
+                    "Stack frame"
+                ],
+                correct: 2,
+                explanation: "'Leap of faith' là tin tưởng hàm đệ quy sẽ hoạt động đúng cho input nhỏ hơn. Giống như method tin vào 'self' - tin vào chính mình sẽ hoạt động đúng!"
+            },
+            {
+                boss: 1,
+                difficulty: "hard",
+                points: 20,
+                question: "Code này xử lý nested list theo cách nào?",
+                code: `def print_outline(lst, level):
+    for item in lst:
+        if isinstance(item, list):
+            print_outline(item, level+1)
+        else:
+            print(' ' * level + item)`,
+                options: [
+                    "Chỉ in level đầu tiên",
+                    "In TẤT CẢ các level với indent tương ứng",
+                    "Error nếu có list lồng nhau",
+                    "In ngược từ dưới lên"
+                ],
+                correct: 1,
+                explanation: "Đệ quy xử lý nested data! Nếu gặp list → gọi đệ quy với level+1 (indent nhiều hơn). Nếu gặp string → in với indent. Xử lý được độ sâu BẤT KỲ!"
+            },
+            {
+                boss: 1,
+                difficulty: "medium",
+                points: 15,
+                question: "Recursive definition của factorial là:",
+                code: "",
+                options: [
+                    "n! = n * (n-1) * ... * 1",
+                    "n! = n * (n-1)! với 0! = 1",
+                    "n! = n + (n-1)!",
+                    "n! = n! - 1"
+                ],
+                correct: 1,
+                explanation: "Recursive definition chia bài toán thành: n! = n * (n-1)! với base case 0! = 1. Đây là 'divide and conquer' - giảm bài toán xuống bài toán nhỏ hơn."
+            },
+            {
+                boss: 1,
+                difficulty: "easy",
+                points: 10,
+                question: "Recursion vs For-loop: ai mạnh hơn?",
+                code: "",
+                options: [
+                    "For-loop mạnh hơn",
+                    "Recursion mạnh hơn (xử lý được nested data)",
+                    "Ngang nhau",
+                    "Tùy trường hợp"
+                ],
+                correct: 1,
+                explanation: "Recursion MẠNH HƠN for-loop! For-loop không xử lý được nested data có độ sâu không biết trước. Nhưng recursion có thể. While-loop tương đương recursion."
+            },
+            {
+                boss: 1,
+                difficulty: "hard",
+                points: 20,
+                question: "Hàm này tính gì?",
+                code: `def mystery(s):
+    if len(s) <= 1:
+        return s
+    return mystery(s[1:]) + s[0]`,
+                options: [
+                    "Trả về string gốc",
+                    "ĐẢO NGƯỢC string",
+                    "Xóa ký tự đầu",
+                    "Error"
+                ],
+                correct: 1,
+                explanation: "mystery('abc') = mystery('bc') + 'a' = (mystery('c') + 'b') + 'a' = (('c') + 'b') + 'a' = 'cba'. Đệ quy xây dựng string từ CUỐI LÊN!"
+            },
+            {
+                boss: 1,
+                difficulty: "medium",
+                points: 15,
+                question: "Bao nhiêu recursive call cho mystery([1, [2, [3]]])?",
+                code: `def mystery(lst):
+    for item in lst:
+        if isinstance(item, list):
+            mystery(item)
+        else:
+            print(item)`,
+                options: ["1", "2", "3", "4"],
+                correct: 2,
+                explanation: "mystery([1,[2,[3]]]) gọi mystery([2,[3]]) gọi mystery([3]). Tổng 3 calls (không tính call ban đầu). Mỗi lần gặp nested list là 1 call!"
+            },
+
+            // BOSS 3: Search & Sort Titan (10 questions)
+            {
+                boss: 2,
+                difficulty: "easy",
+                points: 10,
+                question: "Linear search có time complexity là:",
+                code: "",
+                options: ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+                correct: 2,
+                explanation: "Linear search kiểm tra LẦN LƯỢT từng phần tử → worst case phải duyệt hết n phần tử → O(n). Best case O(1) nếu tìm ngay đầu."
+            },
+            {
+                boss: 2,
+                difficulty: "medium",
+                points: 15,
+                question: "Binary search YÊU CẦU gì?",
+                code: "",
+                options: [
+                    "Array phải có độ dài chẵn",
+                    "Array phải ĐÃ ĐƯỢC SẮP XẾP",
+                    "Phần tử phải là số",
+                    "Array không có phần tử trùng"
+                ],
+                correct: 1,
+                explanation: "Binary search BẮT BUỘC array phải sorted! Nó chia đôi search space dựa trên so sánh với middle. Nếu không sorted → kết quả sai hoặc miss item."
+            },
+            {
+                boss: 2,
+                difficulty: "hard",
+                points: 20,
+                question: "Tìm 57 trong [11,14,25,30,40,41,52,57,70] bằng binary search cần bao nhiêu bước?",
+                code: "",
+                options: ["2", "3", "4", "5"],
+                correct: 1,
+                explanation: "Bước 1: mid=40 (index 4), 57>40 → tìm bên phải. Bước 2: mid=52 (index 6), 57>52 → tìm bên phải. Bước 3: mid=57 (index 7) → FOUND! Chỉ 3 bước!"
+            },
+            {
+                boss: 2,
+                difficulty: "medium",
+                points: 15,
+                question: "Bubble sort hoạt động như thế nào?",
+                code: "",
+                options: [
+                    "Tìm min và đặt lên đầu",
+                    "Chia đôi array và merge",
+                    "SWAP các cặp phần tử kề nhau nếu sai thứ tự",
+                    "Chọn pivot và partition"
+                ],
+                correct: 2,
+                explanation: "Bubble sort so sánh và SWAP các cặp phần tử KỀ NHAU. Phần tử lớn nhất sẽ 'nổi' lên cuối sau mỗi pass. O(n²) time complexity."
+            },
+            {
+                boss: 2,
+                difficulty: "easy",
+                points: 10,
+                question: "Thuật toán sắp xếp nào NHANH NHẤT trong trường hợp tốt nhất?",
+                code: "",
+                options: ["Bubble Sort", "Selection Sort", "Merge Sort", "Quick Sort"],
+                correct: 3,
+                explanation: "Quick Sort có best case O(n log n) và thực tế rất nhanh. Merge Sort cũng O(n log n) nhưng cần thêm O(n) space. Bubble/Selection là O(n²)."
+            },
+            {
+                boss: 2,
+                difficulty: "hard",
+                points: 20,
+                question: "Code này là thuật toán gì?",
+                code: `for i in range(len(arr)):
+    min_idx = i
+    for j in range(i+1, len(arr)):
+        if arr[j] < arr[min_idx]:
+            min_idx = j
+    arr[i], arr[min_idx] = arr[min_idx], arr[i]`,
+                options: ["Bubble Sort", "Selection Sort", "Insertion Sort", "Merge Sort"],
+                correct: 1,
+                explanation: "Selection Sort! Tìm phần tử NHỎ NHẤT trong phần chưa sort (min_idx), rồi swap về đúng vị trí. Outer loop chọn vị trí, inner loop tìm min."
+            },
+            {
+                boss: 2,
+                difficulty: "medium",
+                points: 15,
+                question: "Insertion Sort thích hợp nhất cho:",
+                code: "",
+                options: [
+                    "Array rất lớn (1 triệu phần tử)",
+                    "Array GẦN NHƯ ĐÃ SORTED",
+                    "Array random",
+                    "Array sorted ngược"
+                ],
+                correct: 1,
+                explanation: "Insertion Sort có best case O(n) khi array GẦN SORTED. Mỗi phần tử chỉ cần shift ít vị trí. Worst case O(n²) khi sorted ngược."
+            },
+            {
+                boss: 2,
+                difficulty: "hard",
+                points: 20,
+                question: "Merge Sort có space complexity là:",
+                code: "",
+                options: ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+                correct: 2,
+                explanation: "Merge Sort cần thêm O(n) space để lưu temporary arrays khi merge. Đây là nhược điểm so với Quick Sort (O(log n) space cho call stack)."
+            },
+            {
+                boss: 2,
+                difficulty: "easy",
+                points: 10,
+                question: "Stable sort là gì?",
+                code: "",
+                options: [
+                    "Luôn cho kết quả giống nhau",
+                    "Giữ THỨ TỰ TƯƠNG ĐỐI của các phần tử bằng nhau",
+                    "Không bao giờ crash",
+                    "Sắp xếp nhanh"
+                ],
+                correct: 1,
+                explanation: "Stable sort GIỮ THỨ TỰ ban đầu của các phần tử có giá trị bằng nhau. Ví dụ: [(3,A), (3,B)] → vẫn A trước B. Bubble, Merge là stable. Quick, Selection không."
+            },
+            {
+                boss: 2,
+                difficulty: "medium",
+                points: 15,
+                question: "Quick Sort chọn pivot thế nào?",
+                code: "",
+                options: [
+                    "Luôn là phần tử đầu",
+                    "Luôn là phần tử giữa",
+                    "Có nhiều cách: đầu, cuối, random, median",
+                    "Phần tử nhỏ nhất"
+                ],
+                correct: 2,
+                explanation: "Quick Sort có NHIỀU CÁCH chọn pivot: first, last, random, median-of-three. Pivot tốt (gần median) cho best case O(n log n). Pivot tệ cho worst case O(n²)."
+            },
+
+            // BOSS 4: Loop Master (10 questions)
+            {
+                boss: 3,
+                difficulty: "easy",
+                points: 10,
+                question: "While loop khác for loop ở điểm nào?",
+                code: "",
+                options: [
+                    "While nhanh hơn",
+                    "While cho phép số vòng lặp KHÔNG XÁC ĐỊNH trước",
+                    "While không thể dùng với list",
+                    "While luôn vô hạn"
+                ],
+                correct: 1,
+                explanation: "While loop dừng khi condition = False, KHÔNG CẦN biết trước số vòng lặp. For loop duyệt collection có kích thước xác định. While mạnh hơn for!"
+            },
+            {
+                boss: 3,
+                difficulty: "medium",
+                points: 15,
+                question: "Code này in ra gì?",
+                code: `a = 8
+b = 12
+while a != b:
+    if a > b:
+        a = a - b
+    else:
+        b = b - a
+print(a)`,
+                options: ["0", "2", "4", "8"],
+                correct: 2,
+                explanation: "Đây là thuật toán Euclidean tìm GCD (ước chung lớn nhất). a=8, b=12 → b-a=4 → a=8,b=4 → a-b=4 → a=4,b=4 → dừng. Print 4!"
+            },
+            {
+                boss: 3,
+                difficulty: "hard",
+                points: 20,
+                question: "4 câu hỏi thiết kế while loop là gì?",
+                code: "",
+                options: [
+                    "Start, Stop, Step, Speed",
+                    "Start right, Maintain relationship, Make progress, Stop right",
+                    "Init, Condition, Update, Break",
+                    "Begin, Continue, Update, End"
+                ],
+                correct: 1,
+                explanation: "4 câu hỏi: 1) Start right? (init đúng) 2) Maintain relationship? (update variables) 3) Make progress? (tiến về condition = False) 4) Stop right? (đạt mục tiêu)"
+            },
+            {
+                boss: 3,
+                difficulty: "medium",
+                points: 15,
+                question: "Break statement làm gì?",
+                code: "",
+                options: [
+                    "Dừng chương trình",
+                    "Thoát khỏi INNERMOST loop",
+                    "Bỏ qua iteration hiện tại",
+                    "Raise exception"
+                ],
+                correct: 1,
+                explanation: "Break thoát NGAY LẬP TỨC khỏi loop gần nhất (innermost). Nếu có nested loops, chỉ thoát 1 layer. Continue thì bỏ qua iteration hiện tại."
+            },
+            {
+                boss: 3,
+                difficulty: "easy",
+                points: 10,
+                question: "Infinite loop xảy ra khi:",
+                code: "",
+                options: [
+                    "Loop condition luôn True",
+                    "Quên dấu :",
+                    "Dùng while thay vì for",
+                    "Code quá dài"
+                ],
+                correct: 0,
+                explanation: "Infinite loop khi condition KHÔNG BAO GIỜ False. Ví dụ: while True: hoặc quên update biến điều kiện. Dùng Ctrl+C để dừng. Python giới hạn recursion nhưng KHÔNG giới hạn loop!"
+            },
+            {
+                boss: 3,
+                difficulty: "hard",
+                points: 20,
+                question: "For loop này tương đương while loop nào?",
+                code: `for x in [1, 2, 3]:
+    print(x)`,
+                options: [
+                    "x=1; while x<=3: print(x); x+=1",
+                    "iterator=iter([1,2,3]); while True: try: x=next(iterator); print(x); except StopIteration: break",
+                    "while [1,2,3]: print([1,2,3][0])",
+                    "Không thể convert"
+                ],
+                correct: 1,
+                explanation: "For loop thực chất dùng iterator! iter() tạo iterator, next() lấy item tiếp theo, StopIteration báo hết. Đây là cách Python implement for loop!"
+            },
+            {
+                boss: 3,
+                difficulty: "medium",
+                points: 15,
+                question: "Code này sẽ in bao nhiêu số?",
+                code: `i = 0
+while i < 5:
+    if i == 3:
+        break
+    print(i)
+    i += 1`,
+                options: ["3", "4", "5", "Vô hạn"],
+                correct: 0,
+                explanation: "Print 0,1,2 rồi break khi i==3. Không print 3 vì break TRƯỚC print. Tổng 3 số được in."
+            },
+            {
+                boss: 3,
+                difficulty: "easy",
+                points: 10,
+                question: "Accumulator pattern trong loop là gì?",
+                code: "",
+                options: [
+                    "Dùng += để cộng dồn giá trị",
+                    "Dùng * để nhân",
+                    "Dùng append cho list",
+                    "Tất cả các đáp án trên"
+                ],
+                correct: 3,
+                explanation: "Accumulator là biến TÍCHlũy giá trị qua các iteration. Có thể là: sum (+=), product (*=), list (append), count (count+=1), string (str+=...)."
+            },
+            {
+                boss: 3,
+                difficulty: "hard",
+                points: 20,
+                question: "Syracuse sequence với start=3 là gì?",
+                code: `def syr(n):
+    # if n==1: return 1
+    # if even: return n//2
+    # if odd: return 3*n+1`,
+                options: [
+                    "[3, 10, 5, 16, 8, 4, 2, 1]",
+                    "[3, 9, 27, 81]",
+                    "[3, 6, 12, 24]",
+                    "[3, 2, 1]"
+                ],
+                correct: 0,
+                explanation: "3 (odd)→10 (even)→5 (odd)→16 (even)→8→4→2→1. Đây là Collatz conjecture - chưa chứng minh được là MỌI số đều về 1!"
+            },
+            {
+                boss: 3,
+                difficulty: "medium",
+                points: 15,
+                question: "Flag variable là gì?",
+                code: "",
+                options: [
+                    "Biến lưu quốc kỳ",
+                    "Biến BOOLEAN để điều khiển loop",
+                    "Biến lưu vị trí",
+                    "Biến đánh dấu lỗi"
+                ],
+                correct: 1,
+                explanation: "Flag (cờ hiệu) là biến boolean để ĐIỀU KHIỂN LOOP. Ví dụ: still_playing = True, rồi set = False để thoát. Thường dùng với while flag: pattern."
+            },
+
+            // BOSS 5: Final Boss - Data Structure Demon (10 questions)
+            {
+                boss: 4,
+                difficulty: "easy",
+                points: 10,
+                question: "List, Tuple, Dictionary - cái nào MUTABLE?",
+                code: "",
+                options: ["List", "Tuple", "Dictionary", "List và Dictionary"],
+                correct: 3,
+                explanation: "List và Dictionary là MUTABLE (có thể thay đổi). Tuple là IMMUTABLE (không thể thay đổi sau khi tạo). String cũng immutable!"
+            },
+            {
+                boss: 4,
+                difficulty: "medium",
+                points: 15,
+                question: "Code này sẽ ra gì?",
+                code: `t = (1, 2, 3)
+t[0] = 10
+print(t)`,
+                options: ["(10, 2, 3)", "(1, 2, 3)", "Error: tuple immutable", "[10, 2, 3]"],
+                correct: 2,
+                explanation: "TypeError! Tuple là IMMUTABLE - KHÔNG THỂ thay đổi phần tử. Muốn 'thay đổi' phải tạo tuple mới: t = (10, 2, 3)."
+            },
+            {
+                boss: 4,
+                difficulty: "hard",
+                points: 20,
+                question: "Output của code này?",
+                code: `d = {'a': 1, 'b': 2}
+d['c'] = 3
+d['a'] = 10
+print(len(d))`,
+                options: ["2", "3", "4", "Error"],
+                correct: 1,
+                explanation: "Dictionary có 3 keys: 'a', 'b', 'c'. d['a']=10 là UPDATE giá trị cũ, KHÔNG thêm key mới. len(d) = số keys = 3."
+            },
+            {
+                boss: 4,
+                difficulty: "medium",
+                points: 15,
+                question: "Cách nào TỐT NHẤT để đếm tần suất từ?",
+                code: "",
+                options: [
+                    "Dùng list counts",
+                    "Dùng dictionary {word: count}",
+                    "Dùng tuple",
+                    "Dùng set"
+                ],
+                correct: 1,
+                explanation: "Dictionary HOÀN HẢO cho counting! {word: count} cho O(1) lookup và update. List phải search O(n), tuple immutable, set không lưu count."
+            },
+            {
+                boss: 4,
+                difficulty: "easy",
+                points: 10,
+                question: "Set khác list ở điểm nào?",
+                code: "",
+                options: [
+                    "Set KHÔNG CÓ thứ tự và KHÔNG trùng lặp",
+                    "Set nhanh hơn",
+                    "Set chỉ chứa số",
+                    "Set dùng ()"
+                ],
+                correct: 0,
+                explanation: "Set là UNORDERED (không thứ tự) và mỗi item UNIQUE (không trùng). Syntax: s = {1, 2, 3}. Dùng cho membership test O(1), loại duplicate."
+            },
+            {
+                boss: 4,
+                difficulty: "hard",
+                points: 20,
+                question: "Dict iteration mặc định iterate qua gì?",
+                code: `d = {'x': 1, 'y': 2}
+for item in d:
+    print(item)`,
+                options: ["Values (1, 2)", "Keys ('x', 'y')", "Tuples (('x',1), ('y',2))", "Error"],
+                correct: 1,
+                explanation: "For loop qua dictionary mặc định iterate qua KEYS! Để lấy values: d.values(). Để lấy cả key-value: d.items()."
+            },
+            {
+                boss: 4,
+                difficulty: "medium",
+                points: 15,
+                question: "Tuple unpacking là gì?",
+                code: `x, y = (3, 4)`,
+                options: [
+                    "Error",
+                    "ASSIGN nhiều biến từ tuple",
+                    "Chuyển tuple thành list",
+                    "Tính tổng tuple"
+                ],
+                correct: 1,
+                explanation: "Tuple unpacking ASSIGN các phần tử của tuple cho nhiều biến cùng lúc! x=3, y=4. Rất tiện khi return multiple values: return (sum, avg)."
+            },
+            {
+                boss: 4,
+                difficulty: "hard",
+                points: 20,
+                question: "Output của code này?",
+                code: `lst = [1, 2, 3]
+s = set(lst)
+s.add(2)
+print(len(s))`,
+                options: ["3", "4", "Error", "2"],
+                correct: 0,
+                explanation: "Set không cho phép DUPLICATE. s = {1,2,3}. add(2) không làm gì vì 2 đã có. len(s) vẫn = 3. Set tự động loại bỏ trùng!"
+            },
+            {
+                boss: 4,
+                difficulty: "easy",
+                points: 10,
+                question: "enumerate() trả về gì?",
+                code: `for i, val in enumerate(['a','b','c']):
+    print(i, val)`,
+                options: [
+                    "Chỉ values",
+                    "Chỉ indexes",
+                    "Tuples (index, value)",
+                    "Dictionary"
+                ],
+                correct: 2,
+                explanation: "enumerate() trả về TUPLES (index, value)! Rất tiện khi cần cả index và value trong loop. Output: (0,'a'), (1,'b'), (2,'c')."
+            },
+            {
+                boss: 4,
+                difficulty: "medium",
+                points: 15,
+                question: "Code này có vấn đề gì?",
+                code: `d = {'name': 'An'}
+print(d['age'])`,
+                options: [
+                    "Không có vấn đề",
+                    "KeyError: key 'age' không tồn tại",
+                    "ValueError",
+                    "TypeError"
+                ],
+                correct: 1,
+                explanation: "KeyError! Access key không tồn tại raise error. Dùng d.get('age', default) để tránh error hoặc kiểm tra 'age' in d trước."
+            },
+        ];
+
+        const bosses = [
+            {
+                name: "🐉 File I/O Dragon",
+                level: 1,
+                maxHp: 150,
+                description: "Master of reading and writing! Defeat him to prove your file handling skills!",
+                questions: questions.slice(0, 10)
+            },
+            {
+                name: "🔄 Recursion Beast",
+                level: 2,
+                maxHp: 250,
+                description: "He calls himself infinitely! Can you break his cycle?",
+                questions: questions.slice(10, 20)
+            },
+            {
+                name: "⚔️ Search & Sort Titan",
+                level: 3,
+                maxHp: 350,
+                description: "Organized and efficient! Show him your algorithmic power!",
+                questions: questions.slice(20, 30)
+            },
+            {
+                name: "♾️ Loop Master",
+                level: 4,
+                maxHp: 450,
+                description: "While True: attack! Break his eternal loops!",
+                questions: questions.slice(30, 40)
+            },
+            {
+                name: "👹 Data Structure Demon",
+                level: 5,
+                maxHp: 1000,
+                description: "Final Boss! Master of Lists, Dicts, and Sets! Defeat him to become Python Master!",
+                questions: questions.slice(40, 50)
+            }
+        ];
+
+        // Game state
+        let currentQuestion = 0;
+        let currentBoss = 0;
+        let playerScore = 0;
+        let correctAnswers = 0;
+        let incorrectAnswers = 0;
+        let bossesDefeated = 0;
+        let answered = false;
+        let bossHp = bosses[0].maxHp;
+
+        // Initialize game
+        function initGame() {
+            updateBossDisplay();
+            updateStats();
+            displayQuestion();
+        }
+
+        function updateBossDisplay() {
+            const boss = bosses[currentBoss];
+            document.getElementById('bossName').textContent = boss.name;
+            document.getElementById('bossLevel').textContent = `Level ${boss.level}`;
+            document.getElementById('bossDescription').textContent = boss.description;
+            updateBossHp();
+        }
+
+        function updateBossHp() {
+            const boss = bosses[currentBoss];
+            const hpPercentage = (bossHp / boss.maxHp) * 100;
+            document.getElementById('bossHpBar').style.width = hpPercentage + '%';
+            document.getElementById('bossHpText').textContent = `${Math.max(0, bossHp)} / ${boss.maxHp} HP`;
+        }
+
+        function updateStats() {
+            document.getElementById('playerScore').textContent = playerScore;
+            document.getElementById('correctCount').textContent = correctAnswers;
+            document.getElementById('incorrectCount').textContent = incorrectAnswers;
+            document.getElementById('bossesDefeated').textContent = `${bossesDefeated} / 5`;
+        }
+
+        function displayQuestion() {
+            const q = questions[currentQuestion];
+            answered = false;
+
+            document.getElementById('questionNumber').textContent = `Câu ${currentQuestion + 1} / 50`;
+            document.getElementById('questionDifficulty').className = `question-difficulty difficulty-${q.difficulty}`;
+            document.getElementById('questionDifficulty').textContent = q.difficulty.toUpperCase() + ` (+${q.points} pts)`;
+            
+            let questionHTML = q.question;
+            if (q.code) {
+                questionHTML += `<div class="code-block">${highlightCode(q.code)}</div>`;
+            }
+            document.getElementById('questionText').innerHTML = questionHTML;
+
+            const optionsGrid = document.getElementById('optionsGrid');
+            optionsGrid.innerHTML = '';
+            q.options.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = `<strong>${String.fromCharCode(65 + index)}.</strong> ${option}`;
+                btn.onclick = () => selectAnswer(index);
+                optionsGrid.appendChild(btn);
+            });
+
+            document.getElementById('explanation').classList.remove('show');
+            document.getElementById('prevBtn').disabled = currentQuestion === 0;
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        function highlightCode(code) {
+            return code
+                .replace(/\n/g, '<br>')
+                .replace(/(def|if|else|elif|for|while|return|in|import|from|try|except|with|as|class|True|False|None|and|or|not|is|break|continue)/g, '<span class="keyword">$1</span>')
+                .replace(/('.*?'|".*?")/g, '<span class="string">$1</span>')
+                .replace(/(#.*?)(<br>|$)/g, '<span class="comment">$1</span>$2')
+                .replace(/\b(\d+)\b/g, '<span class="number">$1</span>');
+        }
+
+        function selectAnswer(selected) {
+            if (answered) return;
+            
+            answered = true;
+            const q = questions[currentQuestion];
+            const buttons = document.querySelectorAll('.option-btn');
+            
+            buttons.forEach((btn, index) => {
+                btn.disabled = true;
+                if (index === q.correct) {
+                    btn.classList.add('correct');
+                }
+                if (index === selected && selected !== q.correct) {
+                    btn.classList.add('incorrect');
+                }
+            });
+
+            if (selected === q.correct) {
+                correctAnswers++;
+                playerScore += q.points;
+                dealDamage(q.points);
+            } else {
+                incorrectAnswers++;
+            }
+
+            updateStats();
+
+            document.getElementById('explanationText').textContent = q.explanation;
+            document.getElementById('explanation').classList.add('show');
+        }
+
+        function dealDamage(damage) {
+            bossHp -= damage;
+            updateBossHp();
+
+            // Show damage indicator
+            const indicator = document.getElementById('damageIndicator');
+            indicator.textContent = `-${damage}`;
+            indicator.classList.add('show');
+            setTimeout(() => indicator.classList.remove('show'), 1000);
+
+            // Check if boss defeated
+            if (bossHp <= 0 && currentBoss < bosses.length - 1) {
+                bossesDefeated++;
+                setTimeout(() => {
+                    alert(`🎉 Boss ${currentBoss + 1} Defeated! Moving to next boss!`);
+                    currentBoss++;
+                    bossHp = bosses[currentBoss].maxHp;
+                    updateBossDisplay();
+                    updateStats();
+                }, 500);
+            } else if (bossHp <= 0 && currentBoss === bosses.length - 1) {
+                bossesDefeated++;
+                setTimeout(() => showVictory(), 1000);
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                displayQuestion();
+                window.scrollTo(0, 0);
+            } else {
+                showVictory();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                displayQuestion();
+                window.scrollTo(0, 0);
+            }
+        }
+
+        function showVictory() {
+            document.getElementById('questionCard').style.display = 'none';
+            document.getElementById('bossArea').style.display = 'none';
+            
+            const victoryScreen = document.getElementById('victoryScreen');
+            document.getElementById('finalScore').textContent = playerScore;
+            document.getElementById('finalCorrect').textContent = correctAnswers;
+            document.getElementById('finalIncorrect').textContent = incorrectAnswers;
+            const percentage = ((correctAnswers / questions.length) * 100).toFixed(1);
+            document.getElementById('finalPercentage').textContent = percentage;
+
+            const defeatedHTML = bosses.map((boss, i) => 
+                i < bossesDefeated ? 
+                `<div class="boss-defeated">✅ ${boss.name} - DEFEATED!</div>` :
+                `<div class="boss-defeated" style="opacity:0.3">⚔️ ${boss.name} - Not defeated</div>`
+            ).join('');
+            document.getElementById('defeatedBosses').innerHTML = defeatedHTML;
+
+            victoryScreen.classList.add('show');
+        }
+
+        function restartGame() {
+            currentQuestion = 0;
+            currentBoss = 0;
+            playerScore = 0;
+            correctAnswers = 0;
+            incorrectAnswers = 0;
+            bossesDefeated = 0;
+            bossHp = bosses[0].maxHp;
+
+            document.getElementById('victoryScreen').classList.remove('show');
+            document.getElementById('questionCard').style.display = 'block';
+            document.getElementById('bossArea').style.display = 'block';
+
+            initGame();
+            window.scrollTo(0, 0);
+        }
+
+        // Start game
+        initGame();
+    </script>
+</body>
+</html>

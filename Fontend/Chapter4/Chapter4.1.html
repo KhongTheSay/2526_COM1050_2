@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> my web   </title>
+    <meta charset="UTF8">
+    <meta name="keywords" content ="Tao, là người đẹp trai, Nam Định  ">   
+    <meta name="description" content ="không có bất cứ content gì ">
+    <meta name="author" content="Trần Đức Mạnh ">
+    <meta name="viewport" content ="initial-scale=1.0,width=device-width">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <style>
+
+        * {
+            text-align: center;
+        }
+        h1 {
+            color: gray;
+        }
+        h1:hover {
+            color: blue;
+        }
+        p {
+            font-size: 40px;
+            color: #23A8F2;
+        }
+        #id {
+            color : blue ;
+            background-color :aquamarine; 
+        }
+        .text-blue {
+            color: red ;
+        }
+        .text-orange:hover {
+            font-size: 200px;
+            background-color: #C43E22;
+        }
+        body {
+            background-color: lightblue;
+        }
+        .xemnao {
+            background-image:url(/Fontend/Chapter4/ok2.png);
+            background-size :  200px auto    ;
+            height : 800px ;
+            border :#DF4FDA 1px dashed ;
+            width : 800px ;
+            margin : auto ;
+            background-repeat : no-repeat ;
+            background-position : center ;
+            background-attachment : scroll ;  
+
+/*  background topleft , topright , topcenter ,bottomleft , bottomright , bottom a right b -> cách dưới apx , phải bpx  */
+
+
+/*  cover ưu tiên lấp đầy khung , contain ưu tiên giữ nguyên tỷ lệ ảnh */
+/* background-size : a b , a sẽ quy định chiều rộng của ảnh , b sẽ quy định chiều cao của ảnh , khi tỉ lệ lớn hơn so với tỉ lệ ảnh ban đầu 
+thì nó sẽ tự động được nhân bản để lấp đầu khoảng trống , có thể tắt đi ở phần background-repeat với repeat-x là lặp theo trục ngang , repeat-y 
+là lặp theo trục dọc , nếu để auto thì sẽ cho ra tỉ lệ gốc của ảnh    */
+        }
+
+    </style>
+
+<h1> dòng chữ này có màu xám </h1>
+<h2 id="id"> dòng chữ này có màu xanh </h2>
+<p class ="text-blue"> dòng chữ này có màu xanh nước biển </p>
+<p class="toila"> em quay đi ta mất nhau </p>
+<p class="text-orange"> dòng chữ này có màu cam </p>
+<div class="xemnao">làm 1 đường kẻ </div>
+
+
+</body>
+
+</html>
