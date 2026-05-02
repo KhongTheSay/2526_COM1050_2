@@ -1,15 +1,13 @@
-package TranDucManh_25020258_Week9.Bai07.src;
+package com.uet.bai07;
 
-
+/** Utility methods for Bai07. */
 public class chap7 {
-
 
   public int add(int a, int b) {
     return a + b;
   }
 
-
-  public boolean isEven(int n                 ) {
-    return number%2 == 0;
+  public boolean isEven(int n) {
+    return n % 2 == 0;
   }
 }
